@@ -8,10 +8,10 @@
 import SwiftUI
 
 @main
-struct MenuBarWeatherApp: App {
+struct MenuBarWeatherApp: App { 
     var body: some Scene {
-        WindowGroup {
+        MenuBarExtra("Menu Bar Weather", systemImage: "cloud.sun"){
             ContentView()
-        }
+        }.menuBarExtraStyle(.window)
     }
 }
