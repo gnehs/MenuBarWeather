@@ -11,17 +11,22 @@ import WebKit
 struct ContentView: View {
     var body: some View {
         VStack{
+            HStack{
+                Text("Menu Bar Weather")
+                Spacer()
+                Button("結束") {
+                    NSApplication.shared.terminate(nil)
+                }
+            }  .padding(.horizontal, 16.0).padding(.top, 8.0)
             WebView(urlString: "https://www.google.com.tw/search?q=weather", configuration: configuration)
             { webView in
                 webView.customUserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
-                
-                 
             }
             .frame(width:652.0, height: 338.0)
             .padding(16.0)
             .blendMode(.plusDarker)
-            .background(.white.opacity(0.75))
         }
+        .background(.white.opacity(0.75))
     }
     // Example of WKWebViewConfiguration
     var configuration: WKWebViewConfiguration {
@@ -34,13 +39,13 @@ struct ContentView: View {
             source: userScriptString,
             injectionTime: .atDocumentEnd,
             forMainFrameOnly: true)
-
+        
         let userContentController = WKUserContentController()
         userContentController.addUserScript(userScript)
-
+        
         let configuration = WKWebViewConfiguration()
         configuration.userContentController = userContentController
-
+        
         return configuration
     }
 }
