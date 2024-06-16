@@ -58,6 +58,11 @@ struct ContentView: View {
         document.body.style.opacity = '0';
     }
  }
+ // reload every hour
+ let currentMinute = new Date().getMinutes();
+ setTimeout(() => {
+    location.reload();
+ }, (60 - currentMinute) * 60 * 1000);
 """
         let  userScript = WKUserScript(
             source: userScriptString,
