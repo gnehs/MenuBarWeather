@@ -32,7 +32,7 @@ struct ContentView: View {
             HStack{
                 Image(systemName: icon)
                 Text("Menu Bar Weather")
-                    .fontWeight(.bold) 
+                    .fontWeight(.bold)
                 Spacer()
                 Button("Quit") {
                     NSApplication.shared.terminate(nil)
@@ -52,7 +52,42 @@ struct ContentView: View {
     }
     // Example of WKWebViewConfiguration
     var configuration: WKWebViewConfiguration {
-        let bgColor = colorScheme == .dark ? "#000" : "#fff"
+
+        let darkCSSVariables = """
+        .TylWce, .ksb, .Z1VzSb, .wob_loc, .gNCp2e, .wob-unit {
+            color: #e8eaed !important;
+        }
+        .ksb {
+            color: #e8e8e8 !important;
+        }
+        .wob_ds {
+            background-color: #56585f !important;
+        }
+        #wob_wc{
+            background-color: #000 !important;
+        }
+        .XOKJuc {
+            background-color: #1e3559 !important;
+            border-top: 2px solid #8ab4f8 !important;
+        }
+        """
+
+        let lightCSSVariables = """
+        .TylWce, .ksb, .Z1VzSb, .wob_loc, .gNCp2e, .wob-unit {
+            color: #202124 !important;
+        }
+        .wob_ds {
+            background-color: #f8f9fa !important;
+        }
+        .wtsRwe {
+            color: #70757a !important;
+        }
+        #wob_wc{
+            background-color: #fff !important;
+        }
+        """
+        let CSSVariables = colorScheme == .dark ? darkCSSVariables : lightCSSVariables
+
         let userScriptString = """
   const ob = new MutationObserver(function (mutationsList, observer) {
     injectScript();
@@ -62,22 +97,26 @@ struct ContentView: View {
     subtree: true,
   });
  function injectScript(){
-    const injectCSS = ":root { color-scheme: light dark; }";
+    const injectCSS = `:root { color-scheme: light dark; }
+    \(CSSVariables)
+    #wob_wc {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 99999;
+        background-color: var(--xhUGwc);
+    }
+    body{
+        overflow: hidden;
+    }
+    `;
     const weatherContainer = document.querySelector('#wob_wc');
     if (weatherContainer) {
         if (!weatherContainer.hasAttribute('data-injected')) {
             const style = document.createElement('style');
             style.textContent = injectCSS;
-            document.head.appendChild(style);
-
             weatherContainer.setAttribute('data-injected', 'true');
-            weatherContainer.style.position = 'fixed';
-            weatherContainer.style.top = '0';
-            weatherContainer.style.left = '0';
-            weatherContainer.style.zIndex = '99999';
-            weatherContainer.style.backgroundColor = '\(bgColor)';
-            document.body.style.overflow = 'hidden';
-            document.body.style.opacity = '1';
+            document.head.appendChild(style);
             // get weather icon
             let icon = document.querySelector('.wob_tci').src.split("/").at(-1).split(".").at(0)
             const weather_to_sf_symbols = {
@@ -98,8 +137,6 @@ struct ContentView: View {
             icon = weather_to_sf_symbols[icon]??"cloud.sun"
             window.webkit.messageHandlers.weatherIcon.postMessage(icon)
         }
-    } else {
-        document.body.style.opacity = '0';
     }
  }
  // reload every hour
