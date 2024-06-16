@@ -9,6 +9,7 @@ import SwiftUI
 import WebViewKit
 import WebKit
 struct ContentView: View {
+    @Environment(\.colorScheme) var colorScheme
     var body: some View {
         VStack{
             HStack{
@@ -27,12 +28,13 @@ struct ContentView: View {
             }
             .frame(width:652.0, height: 338.0)
             .padding(16.0)
-            .blendMode(.plusDarker)
+            .blendMode(colorScheme == .dark ? .lighten : .plusDarker)
         }
-        .background(.white.opacity(0.75))
+        .background(colorScheme == .dark ? .clear : .white.opacity(0.75))
     }
     // Example of WKWebViewConfiguration
     var configuration: WKWebViewConfiguration {
+        let bgColor = colorScheme == .dark ? "#000" : "#fff"
         let userScriptString = """
   const ob = new MutationObserver(function (mutationsList, observer) {
     injectScript();
@@ -42,15 +44,20 @@ struct ContentView: View {
     subtree: true,
   });
  function injectScript(){
+    const injectCSS = ":root { color-scheme: light dark; }";
     const weatherContainer = document.querySelector('#wob_wc');
     if (weatherContainer) {
         if (!weatherContainer.hasAttribute('data-injected')) {
+            const style = document.createElement('style');
+            style.textContent = injectCSS;
+            document.head.appendChild(style);
+
             weatherContainer.setAttribute('data-injected', 'true');
             weatherContainer.style.position = 'fixed';
             weatherContainer.style.top = '0';
             weatherContainer.style.left = '0';
             weatherContainer.style.zIndex = '99999';
-            weatherContainer.style.backgroundColor = '#fff';
+            weatherContainer.style.backgroundColor = '\(bgColor)';
             document.body.style.overflow = 'hidden';
             document.body.style.opacity = '1';
         }
