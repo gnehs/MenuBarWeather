@@ -54,7 +54,7 @@ struct ContentView: View {
     var configuration: WKWebViewConfiguration {
 
         let darkCSSVariables = """
-        .TylWce, .ksb, .Z1VzSb, .wob_loc, .gNCp2e, .wob-unit {
+        .TylWce, .ksb, .Z1VzSb, .wob_loc, .gNCp2e, .wob-unit, body {
             color: #e8eaed !important;
         }
         .ksb {
@@ -73,7 +73,7 @@ struct ContentView: View {
         """
 
         let lightCSSVariables = """
-        .TylWce, .ksb, .Z1VzSb, .wob_loc, .gNCp2e, .wob-unit {
+        .TylWce, .ksb, .Z1VzSb, .wob_loc, .gNCp2e, .wob-unit, body {
             color: #202124 !important;
         }
         .wob_ds {
@@ -84,6 +84,10 @@ struct ContentView: View {
         }
         #wob_wc{
             background-color: #fff !important;
+        }
+        .XOKJuc {
+            background-color: #e8f0fe !important;
+            border-top: 2px solid #1a73e8 !important;
         }
         """
         let CSSVariables = colorScheme == .dark ? darkCSSVariables : lightCSSVariables
