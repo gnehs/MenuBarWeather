@@ -53,7 +53,7 @@ struct ContentView: View {
     // Example of WKWebViewConfiguration
     var configuration: WKWebViewConfiguration {
 
-        let darkCSSVariables = """
+        let darkCSS = """
         .TylWce, .ksb, .Z1VzSb, .wob_loc, .gNCp2e, .wob-unit, body {
             color: #e8eaed !important;
         }
@@ -72,7 +72,7 @@ struct ContentView: View {
         }
         """
 
-        let lightCSSVariables = """
+        let lightCSS = """
         .TylWce, .ksb, .Z1VzSb, .wob_loc, .gNCp2e, .wob-unit, body {
             color: #202124 !important;
         }
@@ -90,7 +90,7 @@ struct ContentView: View {
             border-top: 2px solid #1a73e8 !important;
         }
         """
-        let CSSVariables = colorScheme == .dark ? darkCSSVariables : lightCSSVariables
+        let colorSchemeCSS = colorScheme == .dark ? darkCSS : lightCSS
 
         let userScriptString = """
   const ob = new MutationObserver(function (mutationsList, observer) {
@@ -102,13 +102,12 @@ struct ContentView: View {
   });
  function injectScript(){
     const injectCSS = `:root { color-scheme: light dark; }
-    \(CSSVariables)
+    \(colorSchemeCSS)
     #wob_wc {
         position: fixed;
         top: 0;
         left: 0;
         z-index: 99999;
-        background-color: var(--xhUGwc);
     }
     body{
         overflow: hidden;
