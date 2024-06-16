@@ -11,11 +11,11 @@ import WebKit
 
 class WeatherIconHandler: NSObject, WKScriptMessageHandler {
     @Binding var icon: String
-
+    
     init(icon: Binding<String>) {
         _icon = icon
     }
-
+    
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         if message.name == "weatherIcon", let messageBody = message.body as? String {
             icon = messageBody
@@ -35,25 +35,35 @@ struct ContentView: View {
                 Text("Menu Bar Weather")
                     .fontWeight(.bold)
                 Spacer()
-                Button("Quit") {
-                    NSApplication.shared.terminate(nil)
+                Menu() {
+                    Link("GitHub", destination: URL(string: "https://github.com/gnehs/MenuBarWeather")!)
+                    Link("Buy me a coffee", destination: URL(string: "https://www.buymeacoffee.com/gnehs")!)
+                    Divider()
+                    Button("Quit") {
+                        NSApplication.shared.terminate(nil)
+                    }
+                } label: {
+                    Image(systemName: "ellipsis")
                 }
+                .menuStyle(ButtonMenuStyle())
+                .menuIndicator(.hidden)
+                .fixedSize()
             }
-            .padding([.top, .trailing], 8.0)
-            .padding(.leading, 16.0)
+            .padding(.top, 8.0)
+            .padding(.horizontal, 16.0)
             WebView(urlString: "https://www.google.com.tw/search?q=weather", configuration: configuration)
             { webView in
                 webView.customUserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
             }
             .frame(width:652.0, height: 338.0)
-            .padding(16.0)
+            .padding([.leading, .bottom, .trailing], 16.0)
+            .padding(.top, 8.0)
             .blendMode(colorScheme == .dark ? .lighten : .plusDarker)
         }
         .background(colorScheme == .dark ? .clear : .white.opacity(0.75))
     }
     // Example of WKWebViewConfiguration
     var configuration: WKWebViewConfiguration {
-
         let darkCSS = """
         .TylWce, .ksb, .Z1VzSb, .wob_loc, .gNCp2e, .wob-unit, body {
             color: #e8eaed !important;
@@ -72,7 +82,7 @@ struct ContentView: View {
             border-top: 2px solid #8ab4f8 !important;
         }
         """
-
+        
         let lightCSS = """
         .TylWce, .ksb, .Z1VzSb, .wob_loc, .gNCp2e, .wob-unit, body {
             color: #202124 !important;
@@ -92,7 +102,7 @@ struct ContentView: View {
         }
         """
         let colorSchemeCSS = colorScheme == .dark ? darkCSS : lightCSS
-
+        
         let userScriptString = """
   const ob = new MutationObserver(function (mutationsList, observer) {
     injectScript();
@@ -156,17 +166,17 @@ struct ContentView: View {
         let userContentController = WKUserContentController()
         userContentController.addUserScript(userScript)
         userContentController.add(WeatherIconHandler(icon: $icon), name: "weatherIcon")
-
+        
         let configuration = WKWebViewConfiguration()
         configuration.userContentController = userContentController
-
+        
         return configuration
     }
-
-
+    
+    
 }
 
 
 #Preview {
-    ContentView(icon: .constant("cloud.sun"), text:  .constant(""))
+    ContentView(icon: .constant("cloud.sun"), text: .constant(""))
 }
