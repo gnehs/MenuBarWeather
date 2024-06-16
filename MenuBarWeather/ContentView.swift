@@ -26,6 +26,7 @@ class WeatherIconHandler: NSObject, WKScriptMessageHandler {
 
 struct ContentView: View {
     @Binding var icon: String
+    @Binding var text: String
     @Environment(\.colorScheme) var colorScheme
     var body: some View {
         VStack{
@@ -167,5 +168,5 @@ struct ContentView: View {
 
 
 #Preview {
-    ContentView(icon: .constant("cloud.sun"))
+    ContentView(icon: .constant("cloud.sun"), text:  .constant(""))
 }

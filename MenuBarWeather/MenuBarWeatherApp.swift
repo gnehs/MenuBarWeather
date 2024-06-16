@@ -10,9 +10,15 @@ import SwiftUI
 @main
 struct MenuBarWeatherApp: App {
     @State private var MenuBarIcon = "cloud.sun"
+    @State private var MenuBarText = ""
     var body: some Scene {
-        MenuBarExtra("Menu Bar Weather", systemImage: MenuBarIcon){
-            ContentView(icon: $MenuBarIcon)
+        MenuBarExtra() {
+            ContentView(icon: $MenuBarIcon, text: $MenuBarText)
+        } label: {
+            HStack {
+                Image(systemName: MenuBarIcon)
+                Text(MenuBarText)
+            }
         }.menuBarExtraStyle(.window)
     }
 }
