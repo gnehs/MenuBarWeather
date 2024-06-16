@@ -8,13 +8,31 @@
 import SwiftUI
 import WebViewKit
 import WebKit
+
+class WeatherIconHandler: NSObject, WKScriptMessageHandler {
+    @Binding var icon: String
+
+    init(icon: Binding<String>) {
+        _icon = icon
+    }
+
+    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+        if message.name == "weatherIcon", let messageBody = message.body as? String {
+            icon = messageBody
+        }
+    }
+}
+
+
 struct ContentView: View {
+    @Binding var icon: String
     @Environment(\.colorScheme) var colorScheme
     var body: some View {
         VStack{
             HStack{
+                Image(systemName: icon)
                 Text("Menu Bar Weather")
-                    .fontWeight(.bold)
+                    .fontWeight(.bold) 
                 Spacer()
                 Button("Quit") {
                     NSApplication.shared.terminate(nil)
@@ -60,6 +78,25 @@ struct ContentView: View {
             weatherContainer.style.backgroundColor = '\(bgColor)';
             document.body.style.overflow = 'hidden';
             document.body.style.opacity = '1';
+            // get weather icon
+            let icon = document.querySelector('.wob_tci').src.split("/").at(-1).split(".").at(0)
+            const weather_to_sf_symbols = {
+                'partly_cloudy': 'cloud.sun.fill',
+                'thunderstorms': 'cloud.bolt.fill',
+                'rain_s_cloudy': 'cloud.sun.rain.fill',
+                'sunny': 'sun.max.fill',
+                'sunny_s_cloudy': 'cloud.sun.fill',
+                'rain': 'cloud.rain.fill',
+                'cloudy': 'cloud.fill',
+                'rain_light': 'cloud.drizzle.fill',
+                'cloudy_s_rain': 'cloud.sun.rain.fill',
+                'cloudy_s_sunny': 'cloud.sun.fill',
+                'rain_heavy': 'cloud.heavyrain.fill',
+                'sunny_s_rain': 'cloud.sun.rain.fill',
+                'fog': 'cloud.fog.fill'
+            }
+            icon = weather_to_sf_symbols[icon]??"cloud.sun"
+            window.webkit.messageHandlers.weatherIcon.postMessage(icon)
         }
     } else {
         document.body.style.opacity = '0';
@@ -75,17 +112,20 @@ struct ContentView: View {
             source: userScriptString,
             injectionTime: .atDocumentStart,
             forMainFrameOnly: true)
-
         let userContentController = WKUserContentController()
         userContentController.addUserScript(userScript)
+        userContentController.add(WeatherIconHandler(icon: $icon), name: "weatherIcon")
 
         let configuration = WKWebViewConfiguration()
         configuration.userContentController = userContentController
 
         return configuration
     }
+
+
 }
 
+
 #Preview {
-    ContentView()
+    ContentView(icon: .constant("cloud.sun"))
 }
