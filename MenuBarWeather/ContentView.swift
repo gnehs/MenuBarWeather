@@ -137,7 +137,7 @@ struct ContentView: View {
                 'sunny_s_rain': 'cloud.sun.rain.fill',
                 'fog': 'cloud.fog.fill'
             }
-            icon = weather_to_sf_symbols[icon]??"cloud.sun"
+            icon = weather_to_sf_symbols[icon] ?? "cloud.sun"
             window.webkit.messageHandlers.weatherIcon.postMessage(icon)
         }
     }
