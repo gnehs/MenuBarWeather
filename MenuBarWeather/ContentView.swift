@@ -142,10 +142,10 @@ struct ContentView: View {
                 'rain': 'cloud.rain.fill',
                 'cloudy': 'cloud.fill',
                 'rain_light': 'cloud.drizzle.fill',
-                'cloudy_s_rain': 'cloud.sun.rain.fill',
+                'cloudy_s_rain': 'cloud.rain.fill',
                 'cloudy_s_sunny': 'cloud.sun.fill',
                 'rain_heavy': 'cloud.heavyrain.fill',
-                'sunny_s_rain': 'cloud.sun.rain.fill',
+                'sunny_s_rain': 'sun.rain.fill',
                 'fog': 'cloud.fog.fill'
             }
             icon = weather_to_sf_symbols[icon] ?? "cloud.sun"
